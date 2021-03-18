@@ -16,7 +16,7 @@ export default {
     },
     size: {
       type: Number,
-      default:10,
+      default:150,
     },
   },
 };
