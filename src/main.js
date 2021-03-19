@@ -7,9 +7,6 @@ import {showMessage} from './utils/index'
 
 
 import {getBanners} from './api/banner'
-getBanners().then(res=>{
-  console.log(res)
-})
 
 
 Vue.prototype.$showMessage = showMessage
