@@ -1,18 +1,31 @@
 <template>
-  <div class="home-container" ref="container">
-    <ul class="carousel-container" :style="{marginTop:marginTop}">
+  <div class="home-container" ref="container" @wheel="handleWheel" v-loading="isLoading">
+    <ul class="carousel-container" :style="{ marginTop: marginTop }" @transitionend="handleTransitionEnd">
       <li v-for="item in banners" :key="item.id">
-        <Carouselitem />
+        <Carouselitem :bannerItem="item" />
       </li>
     </ul>
-    <div class="icon icon-up" v-show="currentIndex >= 1" @click="switchTo(currentIndex-1)">
+    <div
+      class="icon icon-up"
+      v-show="currentIndex >= 1"
+      @click="switchTo(currentIndex - 1)"
+    >
       <Icon type="arrowUp" />
     </div>
-    <div class="icon icon-down" v-show="currentIndex < banners.length - 1" @click="switchTo(currentIndex+1)">
+    <div
+      class="icon icon-down"
+      v-show="currentIndex < banners.length - 1"
+      @click="switchTo(currentIndex + 1)"
+    >
       <Icon type="arrowDown" />
     </div>
     <ul class="indicator">
-      <li v-for="(item,i) in banners" :key="item.id" @click="switchTo(i)" :class="{active : i == currentIndex}"></li>
+      <li
+        v-for="(item, i) in banners"
+        :key="item.id"
+        @click="switchTo(i)"
+        :class="{ active: i == currentIndex }"
+      ></li>
     </ul>
   </div>
 </template>
@@ -30,26 +43,52 @@ export default {
     return {
       banners: [],
       currentIndex: 0,
-      containerHeight:0
+      containerHeight: 0,
+      switching:false,
+      isLoading:true,
     };
   },
-  computed:{
-    marginTop(){
-      return -this.currentIndex * this.containerHeight + 'px'
-    }
+  computed: {
+    marginTop() {
+      return -this.currentIndex * this.containerHeight + "px";
+    },
   },
   async created() {
     const resp = await getBanners();
     this.banners = resp;
+    this.isLoading = false
   },
-  mounted(){
-    this.containerHeight = this.$refs.container.clientHeight
+  mounted() {
+    this.containerHeight = this.$refs.container.clientHeight;
+    window.addEventListener("resize", this.handleResize);
   },
-  methods:{
-    switchTo(index){
-      this.currentIndex = index
-    }
-  }
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  },
+  methods: {
+    switchTo(index) {
+      this.currentIndex = index;
+    },
+    //鼠标滚动事件
+    handleWheel(e) {
+      if(this.switching){
+        return;
+      }
+      if (e.deltaY < -5 && this.currentIndex > 0) {
+        this.switching = true
+        this.currentIndex--;
+      }else if (e.deltaY > 5 && this.currentIndex < this.banners.length - 1) {
+        this.switching = true
+        this.currentIndex++;
+      }
+    },
+    handleTransitionEnd(){
+      this.switching = false
+    },
+    handleResize() {
+      this.containerHeight = this.$refs.container.clientHeight;
+    },
+  },
 };
 </script>
 
@@ -124,7 +163,6 @@ export default {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: @words;
       border: 1px solid #fff;
       box-sizing: border-box;
       margin-bottom: 10px;

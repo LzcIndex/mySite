@@ -6,10 +6,11 @@ import router from '@/router'
 import {showMessage} from './utils/index'
 
 
-import {getBanners} from './api/banner'
-
-
 Vue.prototype.$showMessage = showMessage
+
+import vLoading from './directives/loading'
+Vue.directive('loading',vLoading)
+
 new Vue({
   router,
   render: h => h(App),
