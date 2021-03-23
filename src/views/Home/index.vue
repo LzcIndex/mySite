@@ -1,7 +1,7 @@
 <template>
   <div class="home-container" ref="container" @wheel="handleWheel" v-loading="isLoading">
     <ul class="carousel-container" :style="{ marginTop: marginTop }" @transitionend="handleTransitionEnd">
-      <li v-for="item in banners" :key="item.id">
+      <li v-for="item in data" :key="item.id">
         <Carouselitem :bannerItem="item" />
       </li>
     </ul>
@@ -14,14 +14,14 @@
     </div>
     <div
       class="icon icon-down"
-      v-show="currentIndex < banners.length - 1"
+      v-show="currentIndex < data.length - 1"
       @click="switchTo(currentIndex + 1)"
     >
       <Icon type="arrowDown" />
     </div>
     <ul class="indicator">
       <li
-        v-for="(item, i) in banners"
+        v-for="(item, i) in data"
         :key="item.id"
         @click="switchTo(i)"
         :class="{ active: i == currentIndex }"
@@ -34,29 +34,24 @@
 import { getBanners } from "@/api/banner.js";
 import Carouselitem from "./Carouselitem";
 import Icon from "@/components/Icon";
+import fetchData from "@/mixins/fetchData.js"
 export default {
+  mixins:[fetchData([])],
   components: {
     Carouselitem,
     Icon,
   },
   data() {
     return {
-      banners: [],
       currentIndex: 0,
       containerHeight: 0,
       switching:false,
-      isLoading:true,
     };
   },
   computed: {
     marginTop() {
       return -this.currentIndex * this.containerHeight + "px";
     },
-  },
-  async created() {
-    const resp = await getBanners();
-    this.banners = resp;
-    this.isLoading = false
   },
   mounted() {
     this.containerHeight = this.$refs.container.clientHeight;
@@ -66,6 +61,9 @@ export default {
     window.removeEventListener("resize", this.handleResize);
   },
   methods: {
+    async fetchData() {
+      return await getBanners();
+    },
     switchTo(index) {
       this.currentIndex = index;
     },
@@ -77,7 +75,7 @@ export default {
       if (e.deltaY < -5 && this.currentIndex > 0) {
         this.switching = true
         this.currentIndex--;
-      }else if (e.deltaY > 5 && this.currentIndex < this.banners.length - 1) {
+      }else if (e.deltaY > 5 && this.currentIndex < this.data.length - 1) {
         this.switching = true
         this.currentIndex++;
       }
