@@ -37,7 +37,7 @@
         <div class="icon weixin">
           <Icon type="weixin" />
         </div>
-        <span>a time for you</span>
+        <span>a time for you </span>
       </a>
       <div class="pop">
         <img
