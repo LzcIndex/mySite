@@ -1,39 +1,122 @@
 <template>
-  <div class="blog-list-container">
+  <div class="blog-list-container" ref="container" v-loading="isLoading">
     <ul>
-      <li>
+      <li v-for="item in data.rows" :key="item.id">
         <div class="thumb">
-          <a href="">
-            <img src="" alt="" />
-          </a>
+          <RouterLink
+            :to="{
+              name: 'BlogDetail',
+              params: {
+                id: item.id,
+              },
+            }"
+          >
+            <img :src="item.thumb" :alt="item.title" :title="item.title" />
+          </RouterLink>
         </div>
         <div class="main">
-          <a href="">
-            <h2></h2>
-          </a>
+          <RouterLink
+            :to="{
+              name: 'BlogDetail',
+              params: {
+                id: item.id,
+              },
+            }"
+          >
+            <h2>{{ item.title }}</h2>
+          </RouterLink>
           <div class="aside">
-            <span> 日期 </span>
-            <span> 浏览： </span>
-            <span> 评论： </span>
-            <a href=""></a>
+            <span> 日期：{{ formatDate(item.createDate) }}</span>
+            <span> 浏览：{{ item.scanNumber }} </span>
+            <span> 评论：{{ item.commentNumber }} </span>
+            <RouterLink
+              :to="{
+                name: 'CategoryBlog',
+                params: {
+                  categoryId: item.category.id,
+                },
+              }"
+            >
+              {{ item.category.name }}
+            </RouterLink>
           </div>
-          <div class="desc"></div>
+          <div class="desc">
+            {{ item.description }}
+          </div>
         </div>
       </li>
     </ul>
+    <Pager
+      v-if="data.total"
+      :current="routeInfo.page"
+      :limit="routeInfo.limit"
+      :total="data.total"
+      :visibleNumber="10"
+      @pageChange="handlePageChange"
+    />
   </div>
 </template>
 
 <script>
-import fetchData from '@/mixins/fetchData.js'
-import { getBlogs } from '@/api/blog.js'
+import Pager from "@/components/Pager";
+import fetchData from "@/mixins/fetchData.js";
+import { getBlogs } from "@/api/blog.js";
+import { formatDate } from "@/utils";
 export default {
-    mixins:[fetchData()],
-    methods:{
-        async fetchData(){
-            await getBlogs()
-        }
-    }
+  mixins: [fetchData([])],
+  components: {
+    Pager,
+  },
+  methods: {
+    formatDate,
+    async fetchData() {
+      return await getBlogs(
+        this.routeInfo.page,
+        this.routeInfo.limit,
+        this.routeInfo.categoryId
+      );
+    },
+    handlePageChange(newPage) {
+      const query = {
+        page: newPage,
+        limit: this.routeInfo.limit,
+      };
+      if (this.routeInfo.categoryId == -1) {
+        this.$router.push({
+          name: "Blog",
+          query,
+        });
+      } else {
+        this.$router.push({
+          name: "CategoryBlog",
+          query,
+          params: {
+            categoryId: this.routeInfo.categoryId,
+          },
+        });
+      }
+    },
+  },
+  computed: {
+    routeInfo() {
+      const page = +this.$route.query.page || 1;
+      const limit = +this.$route.query.limit || 10;
+      const categoryId = +this.$route.params.categoryId || -1;
+      return {
+        page,
+        limit,
+        categoryId,
+      };
+    },
+  },
+  watch: {
+    async $route() {
+      this.isLoading = true;
+      this.$refs.container.scrollTop = 0;
+      this.data = await this.fetchData();
+      this.isLoading = false;
+    },
+  },
 };
 </script>
 

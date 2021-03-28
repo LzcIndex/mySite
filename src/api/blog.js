@@ -23,3 +23,11 @@ export async function getBlogTypes(){
 export async function getBlogCategories(){
   return await request.get("/api/blogtype")
 }
+
+
+/**
+ * 获取博客文章
+ */
+export async function getBlog(id){
+  return await request.get(`/api/blog/${id}`)
+} 
