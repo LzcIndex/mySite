@@ -1,31 +1,66 @@
 <template>
-  <form id="data-form-container" class="data-form-container">
-    <div class="form-item">
-      <div class="input-area">
-        <input type="text" maxlength="10" placeholder="用户昵称" />
-        <span class="tip">10/10</span>
+  <ul class="data-list-container">
+    <li v-for="item in list" :key="item.id">
+      <Avatar :url="item.avatar" :size="44" />
+      <div class="data">
+        <div class="nickname">{{ item.nickname }}</div>
+        <div class="content">{{ item.content }}</div>
+        <div class="time">{{ formatDate(item.createDate, true) }}</div>
       </div>
-      <div class="error">错误信息</div>
-    </div>
-    <div class="form-item">
-      <div class="text-area">
-        <textarea maxlength="300" placeholder="输入内容"></textarea>
-        <span class="tip">10/300</span>
-      </div>
-      <div class="error">错误信息</div>
-    </div>
-    <div class="form-item">
-      <div class="button-area">
-        <button>提交</button>
-      </div>
-    </div>
-  </form>
+    </li>
+  </ul>
 </template>
 
 <script>
-export default {};
+import Avatar from "@/components/Avatar";
+import { formatDate } from "@/utils";
+export default {
+  props: {
+    list: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  components: {
+    Avatar,
+  },
+  methods: {
+    formatDate,
+  },
+};
 </script>
 
 <style lang="less" scoped>
-
+@import "~@/styles/var.less";
+.data-list-container {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  display: flex;
+  border-bottom: 1px solid lighten(@gray, 20%);
+  padding: 15px 0;
+}
+.avatar-container {
+  margin-right: 15px;
+}
+.nickname {
+  color: darken(@success, 10%);
+  margin-bottom: 10px;
+}
+.content {
+  font-size: 14px;
+}
+.data {
+  flex: 1 1 auto;
+  position: relative;
+}
+.time {
+  position: absolute;
+  right: 0;
+  top: 5px;
+  font-size: 12px;
+  color: @gray;
+}
 </style>

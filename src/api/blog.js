@@ -31,3 +31,19 @@ export async function getBlogCategories(){
 export async function getBlog(id){
   return await request.get(`/api/blog/${id}`)
 } 
+
+//提交评论
+export async function postComment(commentInfo){
+  return await request.post(`/api/comment`,commentInfo)
+}
+
+//获取指定博客的评论
+export async function getComments(blogId,page=1,limit=10){
+  return await request.get('/api/comment',{
+    params: {
+      blogId,
+      page,
+      limit,
+    },
+  })
+}
