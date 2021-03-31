@@ -2,7 +2,7 @@
   <div class="detail-container">
     <Layout>
       <div class="main-container" v-loading="isLoading">
-        <!-- <BlogDetail :blog="data" v-if="data" /> -->
+        <BlogDetail :blog="data" v-if="data" />
         <BlogComment />
       </div>
       <template #right>

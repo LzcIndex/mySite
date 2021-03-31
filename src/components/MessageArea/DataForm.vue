@@ -1,29 +1,69 @@
 <template>
-  <form id="data-form-container" class="data-form-container">
+  <form id="data-form-container" class="data-form-container" @submit.prevent="handleSubmit" ref="form">
     <div class="form-item">
       <div class="input-area">
-        <input type="text" maxlength="10" placeholder="用户昵称" />
-        <span class="tip">10/10</span>
+        <input type="text" maxlength="10" placeholder="用户昵称" v-model="formData.nickname"/>
+        <span class="tip">{{ formData.nickname.length }}/10</span>
       </div>
-      <div class="error">错误信息</div>
+      <div class="error">{{ error.nickname }}</div>
     </div>
     <div class="form-item">
       <div class="text-area">
-        <textarea maxlength="300" placeholder="输入内容"></textarea>
-        <span class="tip">10/300</span>
+        <textarea maxlength="300" placeholder="输入内容" v-model="formData.content"></textarea>
+        <span class="tip">{{ formData.content.length }}/300</span>
       </div>
-      <div class="error">错误信息</div>
+      <div class="error">{{ error.content }}</div>
     </div>
     <div class="form-item">
       <div class="button-area">
-        <button>提交</button>
+        <button :disabled="isSubmiting">
+          {{ isSubmiting ? "提交中..." : "提交" }}
+        </button>
       </div>
     </div>
   </form>
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      formData: {
+        nickname: "",
+        content: "",
+      },
+      error: {
+        nickname: "",
+        content: "",
+      },
+      isSubmiting: false,
+    }
+  },
+  methods:{
+    handleSubmit(){
+      this.error.nickname = this.formData.nickname ? "" : "请填写昵称";
+      this.error.content = this.formData.content ? "" : "请填写内容";
+      if (this.error.nickname || this.error.content) {
+        // 有错误
+        return;
+      }
+      this.isSubmiting = true; // 正在提交，防止重复点击
+      this.$emit('submit',this.formData,(successMsg) => {
+        this.$showMessage({
+          content:successMsg,
+          type:'success',
+          duration:1000,
+          container:this.$refs.form,
+          callback:()=>{
+            this.isSubmiting = false;
+            this.formData.nickname = "";
+            this.formData.content = ""
+          }
+        })
+      })
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -96,5 +136,23 @@ export default {};
     padding: 8px 15px;
     height: 120px;
   }
+  button {
+  position: relative;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  width: 100px;
+  height: 34px;
+  color: #fff;
+  border-radius: 4px;
+  background: @primary;
+  &:hover {
+    background: darken(@primary, 10%);
+  }
+  &:disabled {
+    background: lighten(@primary, 20%);
+    cursor: not-allowed;
+  }
+}
 }
 </style>
