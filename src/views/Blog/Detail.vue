@@ -1,9 +1,9 @@
 <template>
   <div class="detail-container">
     <Layout>
-      <div class="main-container" v-loading="isLoading">
+      <div class="main-container" ref="mainContainer" v-loading="isLoading">
         <BlogDetail :blog="data" v-if="data" />
-        <BlogComment />
+        <BlogComment v-if="!isLoading" />
       </div>
       <template #right>
         <div class="right-container" v-loading="isLoading">
@@ -27,11 +27,27 @@ export default {
     Layout,
     BlogDetail,
     BlogTOC,
-    BlogComment
+    BlogComment,
+  },
+  mounted() {
+    this.$refs.mainContainer.addEventListener("scroll", this.handeScroll);
+  },
+  beforeDestroy() {
+    this.$refs.mainContainer.removeEventListener("scroll", this.handeScroll);
+  },
+  updated() {
+    const hash = location.hash;
+    location.hash = "";
+    setTimeout(() => {
+      location.hash = hash;
+    }, 50);
   },
   methods: {
     async fetchData() {
       return await getBlog(this.$route.params.id);
+    },
+    handeScroll() {
+      this.$bus.$emit("mainScroll", this.$refs.mainContainer);
     },
   },
 };
