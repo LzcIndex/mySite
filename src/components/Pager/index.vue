@@ -35,6 +35,7 @@ export default {
       return Math.ceil(this.total / this.limit);
     },
     visibleMin() {
+      console.log('this.current',this.current)
       let min = this.current - Math.floor(this.visibleNumber / 2);
       if (min < 1) {
         min = 1;
@@ -42,6 +43,7 @@ export default {
       return min;
     },
     visibleMax() {
+      console.log('visibleMax:',this.visibleMin,this.visibleNumber-1,this.pageNumber)
       let max = this.visibleMin + this.visibleNumber - 1;
       if (max > this.pageNumber) {
         max = this.pageNumber;
@@ -49,6 +51,7 @@ export default {
       return max;
     },
     numbers() {
+      console.log('numbers:',this.visibleMin,this.visibleMax)
       let nums = [];
       for (let i = this.visibleMin; i <= this.visibleMax; i++) {
         nums.push(i);
@@ -58,6 +61,7 @@ export default {
   },
   methods: {
     handleClick(newPage) {
+      console.log('newPage:',newPage)
       if (newPage < 1) {
         newPage = 1;
       }

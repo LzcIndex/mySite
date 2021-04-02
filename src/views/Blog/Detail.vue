@@ -20,23 +20,15 @@ import BlogDetail from "./components/BlogDetail";
 import BlogTOC from "./components/BlogTOC";
 import BlogComment from "./components/BlogComment";
 import fetchData from "@/mixins/fetchData.js";
+import mainScroll from "@/mixins/mainScroll.js";
 import { getBlog } from "@/api/blog";
 export default {
-  mixins: [fetchData(null)],
+  mixins: [fetchData(null),mainScroll('mainContainer')],
   components: {
     Layout,
     BlogDetail,
     BlogTOC,
     BlogComment,
-  },
-  mounted() {
-    this.$bus.$on("setMainScroll", this.handleSetMainScroll); 
-    this.$refs.mainContainer.addEventListener("scroll", this.handeScroll);
-  },
-  beforeDestroy() {
-    this.$bus.$emit("mainScroll");
-    this.$refs.mainContainer.removeEventListener("scroll", this.handeScroll);
-    this.$bus.$off("setMainScroll", this.handleSetMainScroll);
   },
   updated() {
     const hash = location.hash;
@@ -48,12 +40,6 @@ export default {
   methods: {
     async fetchData() {
       return await getBlog(this.$route.params.id);
-    },
-    handeScroll() {
-      this.$bus.$emit("mainScroll", this.$refs.mainContainer);
-    },
-    handleSetMainScroll(scrollTop){
-      this.$refs.mainContainer.scrollTop = scrollTop;
     }
   },
 };
