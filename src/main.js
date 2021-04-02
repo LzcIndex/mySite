@@ -9,7 +9,9 @@ import './bus'
 Vue.prototype.$showMessage = showMessage
 
 import vLoading from './directives/loading'
+import vLazy from './directives/lazy'
 Vue.directive('loading',vLoading)
+Vue.directive('lazy',vLazy)
 
 new Vue({
   router,
