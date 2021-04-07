@@ -3,6 +3,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import './styles/global.less'
 import router from '@/router'
+import store from '@/store'
 import {showMessage} from './utils/index'
 import './bus'
 
@@ -13,7 +14,10 @@ import vLazy from './directives/lazy'
 Vue.directive('loading',vLoading)
 Vue.directive('lazy',vLazy)
 
+store.dispatch('setting/fetchSetting')
+
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')
