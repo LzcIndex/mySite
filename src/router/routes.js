@@ -1,3 +1,4 @@
+import NotFound from "@/views/NotFound.vue";
 export default [
   {
     name: "Home",
@@ -54,5 +55,10 @@ export default [
     meta: {
       title: "留言板",
     },
+  },
+  {
+    name: "NotFound",
+    path: "*",
+    component: NotFound
   },
 ];
