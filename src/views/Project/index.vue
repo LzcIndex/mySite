@@ -33,6 +33,7 @@
         </p>
       </div>
     </div>
+     <Empty v-if="data.length === 0 && !loading" />
   </div>
 </template>
 
@@ -40,10 +41,12 @@
 import Icon from "@/components/Icon";
 import mainScroll from "@/mixins/mainScroll.js";
 import { mapState } from "vuex";
+import Empty from "@/components/Empty";
 export default {
   mixins: [mainScroll("projectContainer")],
   components: {
     Icon,
+    Empty,
   },
   computed: mapState("project", ["loading", "data"]),
   created() {

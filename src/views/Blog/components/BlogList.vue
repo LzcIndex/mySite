@@ -46,6 +46,7 @@
         </div>
       </li>
     </ul>
+    <Empty v-if="data.rows.length === 0 && !isLoading" />
     <Pager
       v-if="data.total"
       :current="routeInfo.page"
@@ -59,14 +60,16 @@
 
 <script>
 import Pager from "@/components/Pager";
+import Empty from "@/components/Empty";
 import fetchData from "@/mixins/fetchData.js";
 import mainScroll from "@/mixins/mainScroll.js";
 import { getBlogs } from "@/api/blog.js";
 import { formatDate } from "@/utils";
 export default {
-  mixins: [fetchData([]),mainScroll('mainContainer')],
+  mixins: [fetchData({ total: 0, rows: [] }),mainScroll('mainContainer')],
   components: {
     Pager,
+    Empty
   },
   methods: {
     formatDate,
