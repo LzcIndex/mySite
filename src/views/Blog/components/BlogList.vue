@@ -66,7 +66,7 @@ import mainScroll from "@/mixins/mainScroll.js";
 import { getBlogs } from "@/api/blog.js";
 import { formatDate } from "@/utils";
 export default {
-  mixins: [fetchData({ total: 0, rows: [] }),mainScroll('mainContainer')],
+  mixins: [fetchData({ total:0, rows: [] }),mainScroll('mainContainer')],
   components: {
     Pager,
     Empty
