@@ -28,7 +28,7 @@
       <div class="pop">
         <img
           :src="data.qqQrCode"
-          alt=""
+          alt="没有图片显示别慌，作者没上传而已！"
         />
       </div>
     </li>
@@ -42,7 +42,7 @@
       <div class="pop">
         <img
           :src="data.weixinQrCode"
-          alt=""
+          alt="没有图片显示别慌，作者没上传而已！"
         />
       </div>
     </li>
